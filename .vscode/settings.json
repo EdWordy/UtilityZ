@@ -1,0 +1,22 @@
+{
+    "Lua.workspace.library": [
+        "c:\\Users\\edwar\\.vscode\\extensions\\overextended.cfxlua-vscode-1.7.25\\plugin\\library\\runtime",
+        "c:\\Users\\edwar\\.vscode\\extensions\\overextended.cfxlua-vscode-1.7.25\\plugin\\library\\natives\\CFX-NATIVE",
+        "c:\\Users\\edwar\\.vscode\\extensions\\overextended.cfxlua-vscode-1.7.25\\plugin\\library\\natives\\RDR3",
+        "C:/Users/edwar/AppData/Roaming/Code/User/globalStorage/sumneko.lua/addonManager/addons/umbrella/module/library"
+    ],
+    "Lua.runtime.version": "Lua 5.1",
+    "Lua.runtime.path": [
+        "?.lua",
+        "?/init.lua",
+        "server/?.lua"
+    ],
+    "Lua.completion.requireSeparator": "/",
+    "Lua.workspace.preloadFileSize": 800,
+    "Lua.runtime.builtin": {
+        "debug": "disable",
+        "io": "disable",
+        "package": "disable"
+    },
+    "Lua.workspace.checkThirdParty": false
+}
