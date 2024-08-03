@@ -96,7 +96,7 @@ Actions.Flee = {
         -- Example:
         local x, y, z = character:getX(), character:getY(), character:getZ()
         local cell = getCell()
-        local range = 10 -- Flee range
+        local range = 25 -- Flee range
         local safeSquare = nil
         for dx = -range, range do
             for dy = -range, range do
@@ -132,7 +132,7 @@ Actions.SelfDefense = {
         
         local x, y, z = character:getX(), character:getY(), character:getZ()
         local cell = getWorld():getCell()
-        local range = 5 -- Close range for immediate threats
+        local range = 10 -- Close range for immediate threats
         local nearestZombie = nil
         local shortestDistance = range * 1.5 -- Slightly larger to ensure we catch zombies at the edge
 
@@ -157,21 +157,20 @@ Actions.SelfDefense = {
                 if weapon:isRanged() and weapon:getAmmo() > 0 then
                     -- Use firearm if available and loaded
                     character:playSound(weapon:getSwingSound())
-                    character:DoAttack(0)
+                    character:NPCSetAiming(true)
+                    character:NPCSetAttack(true)
                     print(username .. " fired at a zombie with " .. weapon:getName())
                 else
                     -- Melee attack
-                    character:DoAttack(0)
+                    character:NPCSetMelee(true)
+                    character:NPCSetAttack(true)
                     print(username .. " attacked a zombie with " .. weapon:getName())
                 end
-            else
-                -- Unarmed attack
-                character:DoAttack(0)
-                print(username .. " attempted to push a zombie")
             end
 
             -- Check if the attack was successful
             if nearestZombie:isDead() then
+                character:NPCSetAttack(false)
                 print(username .. " killed a zombie")
             end
 
@@ -181,8 +180,8 @@ Actions.SelfDefense = {
             local newX = x + ZombRand(-3, 3)
             local newY = y + ZombRand(-3, 3)
             local newSquare = cell:getGridSquare(newX, newY, z)
-            if newSquare and newSquare:isFreeOrMidair(false) then
-                character:setPath2(newX, newY, z)
+            if newSquare ~= nil then
+                local walkAction = ISWalkToTimedAction:new(character, newSquare)
                 print(username .. " moved to search for threats")
             else
                 print(username .. " couldn't move, staying alert")
@@ -211,7 +210,7 @@ Actions.Idle = {
             function()
                 local x, y, z = character:getX(), character:getY(), character:getZ()
                 local square = getCell():getGridSquare(x + ZombRand(-1, 1), y + ZombRand(-1, 1), z)
-                if square and square:isFreeOrMidair(false) then
+                if square ~= nil then
                     character:pathToLocation(square:getX(), square:getY(), square:getZ())
                     print(username .. " is wandering nearby")
                 end
@@ -248,8 +247,8 @@ Actions.Die = {
 
 Actions.FindFood.weights = {Hunger = 1.0, Tiredness = 0.2, Safety = 0.5, Danger = 0.3, Boredom = 0.1, Health = 0.1}
 Actions.Rest.weights = {Hunger = 0.2, Tiredness = 1.0, Safety = 0.8, Danger = 0.2, Boredom = 0.1, Health = 0.1}
-Actions.Flee.weights = {Hunger = 0.1, Tiredness = 0.3, Safety = 0.9, Danger = 0.8, Boredom = 0.0, Health = 0.5}
-Actions.SelfDefense.weights = {Hunger = 0.1, Tiredness = 0.2, Safety = 1.0, Danger = 1.0, Boredom = 0.0, Health = 0.5}
+Actions.Flee.weights = {Hunger = 0.1, Tiredness = 0.3, Safety = 0.9, Danger = 1.0, Boredom = 0.0, Health = 0.5}
+Actions.SelfDefense.weights = {Hunger = 0.1, Tiredness = 0.2, Safety = 1.0, Danger = 0.75, Boredom = 0.0, Health = 0.5}
 Actions.Idle.weights = {Hunger = 0.1, Tiredness = 0.1, Safety = 0.3, Danger = 0.1, Boredom = 1.0, Health = 0.1}
 Actions.Die.weights = {Health = 10.0}
 
